@@ -1,4 +1,4 @@
-package com.example.yang.washere.Account;
+﻿package com.example.yang.washere.Account;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -115,7 +115,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()){
 
             case R.id.img_user:
-                //TODO 拍照
                 showPopUpWindow();
                 break;
 
