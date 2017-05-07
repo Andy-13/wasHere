@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">wasHere</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Notification</string>
+    <array name="map_filter_time_name_array">
+        <item>三天内</item>
+        <item>一周内</item>
+        <item>一个月内</item>
+        <item>三个月内</item>
+        <item>一年内</item>
+        <item>全部</item>
+    </array>
+
+    <array name="map_filter_num_name_array">
+        <item>5条</item>
+        <item>10条</item>
+        <item>15条</item>
+    </array>
+</resources>

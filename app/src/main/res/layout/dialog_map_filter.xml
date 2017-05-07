@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="筛选条件"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="5"
+                android:background="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/filter_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="时间"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimary"/>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="5"
+                android:background="@color/colorPrimary" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="@dimen/map_dialog_option_margin_size"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/mapDialogOptionStyle"
+                android:text="三天内"
+                android:id="@+id/option_time_1"/>
+
+            <TextView
+                style="@style/mapDialogOptionStyle"
+                android:text="一周内"
+                android:id="@+id/option_time_2"/>
+
+            <TextView
+                style="@style/mapDialogOptionStyle"
+                android:text="一个月内"
+                android:textSize="15sp"
+                android:id="@+id/option_time_3"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="@dimen/map_dialog_option_margin_size"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/mapDialogOptionStyle"
+                android:text="三个月内"
+                android:textSize="15sp"
+                android:id="@+id/option_time_4"/>
+
+            <TextView
+                style="@style/mapDialogOptionStyle"
+                android:text="一年内"
+                android:id="@+id/option_time_5"/>
+
+            <TextView
+                style="@style/mapDialogOptionStyle"
+                android:text="全部"
+                android:id="@+id/option_time_6"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/map_dialog_type_margin_size"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="5"
+                android:background="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/filter_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="信息数"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="5"
+                android:background="@color/colorPrimary" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="@dimen/map_dialog_option_margin_size"
+            android:layout_marginBottom="@dimen/map_dialog_type_margin_size"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/mapDialogOptionStyle"
+                android:text="5条"
+                android:id="@+id/option_num_1"/>
+
+            <TextView
+                style="@style/mapDialogOptionStyle"
+                android:text="10条"
+                android:id="@+id/option_num_2"/>
+
+            <TextView
+                style="@style/mapDialogOptionStyle"
+                android:text="15条"
+                android:id="@+id/option_num_3"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

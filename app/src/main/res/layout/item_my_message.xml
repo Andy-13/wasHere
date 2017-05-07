@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff">
+
+    <LinearLayout
+        android:id="@+id/linear_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+        <com.example.yang.washere.UI.MLRoundedImageView
+            android:id="@+id/ml_user_image"
+            android:layout_width="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_height="50dp"
+           />
+        <LinearLayout
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="40dp">
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_marginLeft="5dp"
+                android:text="东野圭吾"
+                android:textSize="13dp"
+                android:textColor="#000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="2014-10-11 20:40"
+                android:textSize="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    <TextView
+        android:layout_below="@+id/linear_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_content"
+        android:text="我在这里发了一个很有趣的信息"
+        android:layout_marginLeft="75dp"
+        android:textColor="#000"
+        android:textSize="17dp"
+        android:layout_marginRight="20dp"
+        />
+    <ImageView
+        android:layout_below="@+id/tv_content"
+        android:id="@+id/iv_message_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginLeft="75dp"/>
+
+    <View
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/iv_message_image"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE">
+    </View>
+</RelativeLayout>

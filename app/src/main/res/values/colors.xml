@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4A5A7E</color>
+    <color name="colorPrimaryDark">#4A5A7E</color>
+    <color name="colorAccent">#4A5A7E</color>
+
+    <color name="colorMapRange">#734a90e2</color>
+    <color name="colorMessageCirlce">#b2d4fc</color>
+    <color name="colorTransParent">#00000000</color>
+    <color name="colorWhite">#ffffff</color>
+
+
+    <color name="colorToolBar">#4A5A7E</color>
+    <color name="colorLine">#EEEEEE</color>
+    <color name="colorLogout">#c6f73636</color>
+</resources>

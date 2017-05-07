@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff">
+    <LinearLayout
+        android:id="@+id/comment_title"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+        <com.example.yang.washere.UI.MLRoundedImageView
+            android:id="@+id/ml_user_image"
+            android:layout_width="35dp"
+            android:layout_gravity="center_vertical"
+            android:layout_height="35dp"
+            android:src="@mipmap/ic_launcher"/>
+        <LinearLayout
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="30dp">
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_marginLeft="5dp"
+                android:text="东野圭吾"
+                android:textSize="10dp"
+                android:textColor="#000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="2014-10-11 20:40"
+                android:textSize="9dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_below="@id/comment_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我的评论"
+        android:layout_marginLeft="60dp"
+        android:textColor="#000"
+        android:textSize="14dp"
+        android:layout_marginRight="20dp"/>
+
+</RelativeLayout>

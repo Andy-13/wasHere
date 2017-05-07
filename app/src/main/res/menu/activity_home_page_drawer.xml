@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single"
+        >
+        <item
+            android:id="@+id/find_message"
+            android:icon="@drawable/message"
+            android:title="发现信息"/>
+        <item
+            android:id="@+id/my_message"
+            android:icon="@drawable/message"
+            android:title="已发信息"/>
+        <item
+            android:id="@+id/guide"
+            android:icon="@drawable/dossier"
+            android:title="使用指南"/>
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/info"
+            android:title="关于我们"/>
+
+    </group>
+
+
+
+</menu>
