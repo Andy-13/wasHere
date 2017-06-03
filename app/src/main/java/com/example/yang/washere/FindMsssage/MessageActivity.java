@@ -1,9 +1,11 @@
 package com.example.yang.washere.FindMsssage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -93,17 +95,22 @@ public class MessageActivity extends AppCompatActivity {
                 for(int i = 0; i < commentItems.length; i++){
                     commentContents[i] = commentItems[i].getComment_content();
                 }
-                android.app.FragmentManager fragmentManager = getFragmentManager();
-                final ImageDanmuDialog  imageDialog = ImageDanmuDialog.newInstance("lq",commentContents);
-                imageDialog.show(fragmentManager,DIALOG_IMAGE);
-                java.util.Timer timer = new java.util.Timer(true);
+//                android.app.FragmentManager fragmentManager = getFragmentManager();
+//                final ImageDanmuDialog  imageDialog = ImageDanmuDialog.newInstance("lq",commentContents);
+//
+//                imageDialog.show(fragmentManager,DIALOG_IMAGE);
+                int location[] = new int[2] ;
+                iv_message_image.getLocationOnScreen(location);
+                Intent i = ImageDanmuActivity.newIntent(MessageActivity.this,"lq",commentContents
+                        ,location[0],location[1],iv_message_image.getWidth(),iv_message_image.getHeight());
 
-                TimerTask task = new TimerTask() {
-                    public void run() {
-                        imageDialog.equipment();
-                    }
-                };
-                timer.schedule(task, 1000);
+
+                Intent intent = new Intent() ;
+                //intent.putExtras(bundle);
+                startActivity(i);
+                overridePendingTransition(0, 0);
+
+
 
             }
         });

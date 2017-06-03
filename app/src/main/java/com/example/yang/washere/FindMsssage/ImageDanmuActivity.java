@@ -5,24 +5,30 @@ package com.example.yang.washere.FindMsssage;
  */
 
 
+import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewTreeObserver;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.example.yang.washere.R;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.TimerTask;
 
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.model.DanmakuTimer;
@@ -34,48 +40,78 @@ import master.flame.danmaku.ui.widget.DanmakuView;
  * Created by Idoit on 2017/4/29.
  */
 
-public class ImageDanmuDialog extends DialogFragment {
+public class ImageDanmuActivity extends Activity {
     private static final String ARG_IMAGE = "photo";
     private static final String ARG_COMMENTS = "comments";
 
     private DanmakuView mDanmakuView;
     private DanmakuContext mContext;
-    private ImageView mBackgournd;
+    private ImageView mImageView;
     private int commentNums;
     private String[] comments;
 
+    private int mLeft;
+    private int mTop;
+    private float mScaleX;
+    private float mScaleY;
+
     private AcFunDanmakuParser mParser;
 
-    public static ImageDanmuDialog newInstance(String photoFile,String[] comments)
+    public static Intent newIntent(Context packageContext, String photoFile, String[] comments
+            ,int x,int y, int width, int height)
     {
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_IMAGE, photoFile);
-        args.putSerializable(ARG_COMMENTS,comments);
-        ImageDanmuDialog fragment = new ImageDanmuDialog();
-        fragment.setArguments(args);
-        Log.i("123","instance");
-        return fragment;
+        Intent i = new Intent(packageContext, ImageDanmuActivity.class);
+        i.putExtra(ARG_IMAGE, photoFile);
+        i.putExtra(ARG_COMMENTS, comments);
+        i.putExtra("x",x);
+        i.putExtra("y",y);
+        i.putExtra("width",width);
+        i.putExtra("height",height);
+        return i;
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
-        super.onCreateDialog(savedInstanceState);
-        Log.i("123","create dialogImage");
-        setStyle(DialogFragment.STYLE_NORMAL,
-                android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-        String photoFile = (String) getArguments().getSerializable(ARG_IMAGE);
-        comments = (String[]) getArguments().getSerializable(ARG_COMMENTS);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+        final int left = (int)getIntent().getIntExtra("x",0);
+        final int top = (int)getIntent().getIntExtra("y",0);
+        Log.i("123","x1:"+left);
+        Log.i("123","y1:"+top);
+        final int width = (int)getIntent().getIntExtra("width",0);
+        final int height = (int)getIntent().getIntExtra("height",0);
+        Log.i("123","width::"+width);
+        Log.i("123","height::"+height);
+
+
+        String photoFile = (String) getIntent().getStringExtra(ARG_IMAGE);
+        comments = (String[] ) getIntent().getStringArrayExtra(ARG_COMMENTS);
         commentNums = comments.length;
 
-        View v =  LayoutInflater.from(getActivity()).inflate(R.layout.danmu_diaglog, null);
+        setContentView(R.layout.danmu_acitivity);
 
-        mDanmakuView = (DanmakuView) v.findViewById(R.id.danmakuView);
-        mBackgournd = (ImageView)v.findViewById(R.id.backGround);
+        mDanmakuView = (DanmakuView) findViewById(R.id.danmakuView);
+        mImageView = (ImageView)findViewById(R.id.backGround);
+        mImageView .getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mImageView .getViewTreeObserver().removeOnPreDrawListener(this);
+                int location[] = new int[2];
+                mImageView .getLocationOnScreen(location);
+                mLeft = left - location[0];
+                mTop = top - location[1];
+                mScaleX = width*1.0f / mImageView.getWidth();
+                mScaleY = height*1.0f /mImageView.getHeight();
+                activityEnterAnim();
+                return true;
+            }
+        });
+
         Resources resources = getResources();
         Drawable btnDrawable = resources.getDrawable(R.mipmap.hai);
         //mDanmakuView.setBackgroundDrawable(btnDrawable);
-        mBackgournd.setImageDrawable(btnDrawable);
+        mImageView.setImageDrawable(btnDrawable);
 
         Log.i("123","setImageDone");
 
@@ -128,11 +164,14 @@ public class ImageDanmuDialog extends DialogFragment {
 
 
         init();
-        for(int i = 0; i < commentNums; i++){
-            addDanmaku(true, comments[i]);
-        }
-        return new AlertDialog.Builder(getActivity()).setView(v).create();
+        java.util.Timer timer = new java.util.Timer(true);
 
+        TimerTask task = new TimerTask() {
+            public void run() {
+               equipment();
+            }
+        };
+        timer.schedule(task, 300);
     }
 
     public void equipment() {
@@ -140,6 +179,8 @@ public class ImageDanmuDialog extends DialogFragment {
             addDanmaku(true, comments[i]);
         }
     }
+
+
 
     private void addDanmaku(boolean islive,String commentContent) {
         BaseDanmaku danmaku = mContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
@@ -250,5 +291,39 @@ public class ImageDanmuDialog extends DialogFragment {
         int[] colors = {Color.RED, Color.YELLOW, Color.BLUE, Color.GREEN, Color.CYAN, Color.BLACK, Color.DKGRAY};
         int i = ((int) (Math.random() * 10)) % colors.length;
         return colors[i];
+    }
+
+    private void activityEnterAnim() {
+        mImageView.setPivotX(0);
+        mImageView.setPivotY(0);
+        mImageView.setScaleX(mScaleX);
+        mImageView.setScaleY(mScaleY);
+        mImageView.setTranslationX(mLeft);
+        mImageView.setTranslationY(mTop);
+        mImageView.animate().scaleX(1).scaleY(1).translationX(0).translationY(0).
+                setDuration(400).setInterpolator(new DecelerateInterpolator()).start();
+
+    }
+
+    private void activityExitAnim(Runnable runnable) {
+        mImageView.setPivotX(0);
+        mImageView.setPivotY(0);
+        mImageView.animate().scaleX(mScaleX).scaleY(mScaleY).translationX(mLeft).translationY(mTop).
+                withEndAction(runnable).
+                setDuration(100).setInterpolator(new DecelerateInterpolator()).start();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+
+        activityExitAnim(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+                overridePendingTransition(0, 0);
+            }
+        });
     }
 }

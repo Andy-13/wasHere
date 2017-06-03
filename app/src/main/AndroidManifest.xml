@@ -56,8 +56,11 @@
         </activity>
         <activity android:name=".Account.SignupActivity"></activity>
 
+
+
         <activity android:name=".FindMsssage.publicMessageActivity"></activity>
         <activity android:name=".FindMsssage.ReleaseResultImageViewerActivity"></activity>
+        <activity android:name=".FindMsssage.ImageDanmuActivity"></activity>
 
         <activity android:name=".Account.SetNameActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
