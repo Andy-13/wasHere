@@ -190,59 +190,64 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/colorLine"/>
-        <!--签名-->
+    <View
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorLine"/>
+    <!--签名-->
+    <RelativeLayout
+        android:id="@+id/rl_set_sign"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_relative_layout"
+        >
+        <TextView
+            android:id="@+id/tv_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="#333333"
+            android:text="个性签名"
+            android:layout_centerVertical="true"
+            android:textSize="17dp"/>
+
         <RelativeLayout
-            android:id="@+id/rl_set_sign"
+            android:layout_toRightOf="@+id/tv_sign"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_relative_layout"
-            >
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_relative_layout">
             <TextView
-                android:id="@+id/tv_sign"
+                android:id="@+id/tv_set_sign"
+                android:layout_toLeftOf="@+id/right_arrow5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:textColor="#333333"
-                android:text="个性签名"
+                android:textSize="15dp"
+                android:singleLine="true"
+                android:layout_marginRight="15dp"
+                android:text="这是我的签名哈哈哈哈！"
                 android:layout_centerVertical="true"
-                android:textSize="17dp"/>
-
-            <RelativeLayout
-                android:layout_toRightOf="@+id/tv_sign"
-                android:layout_marginLeft="20dp"
-                android:layout_centerVertical="true"
-                android:layout_width="match_parent"
+                />
+            <ImageView
+                android:id="@+id/right_arrow5"
+                android:layout_width="12dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_relative_layout">
-                <TextView
-                    android:id="@+id/tv_set_sign"
-                    android:layout_toLeftOf="@+id/right_arrow4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15dp"
-                    android:singleLine="true"
-                    android:layout_marginRight="15dp"
-                    android:text="这是我的签名哈哈哈哈！"
-                    android:layout_centerVertical="true"
-                    />
-                <ImageView
-                    android:id="@+id/right_arrow4"
-                    android:layout_width="12dp"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/right_arrow"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_centerVertical="true"/>
-            </RelativeLayout>
-
+                android:src="@mipmap/right_arrow"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_centerVertical="true"/>
         </RelativeLayout>
 
-
-        <View
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"/>
+    </RelativeLayout>
+    <View
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorLine"/>
 
         <RelativeLayout
             android:id="@+id/rl_logout"
@@ -250,7 +255,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_relative_layout">
-
             <TextView
                 android:id="@+id/tv_logout"
                 android:layout_width="match_parent"
@@ -262,7 +266,6 @@
                 android:text="切换账号"
                 android:gravity="center"
                 android:textSize="17sp"/>
-
         </RelativeLayout>
 
 
