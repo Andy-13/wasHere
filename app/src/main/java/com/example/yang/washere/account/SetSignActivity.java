@@ -1,4 +1,4 @@
-package com.example.yang.washere.Account;
+package com.example.yang.washere.account;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

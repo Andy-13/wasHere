@@ -34,4 +34,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('libs/Android_Map3D_SDK_V5.0.0_20170311.jar')
     compile files('libs/AMap_Location_V3.4.0_20170427.jar')
+    compile files('libs/glide-3.7.0.jar')
+    compile 'com.zhy:okhttputils:2.6.2'
 }

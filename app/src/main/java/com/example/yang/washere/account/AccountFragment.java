@@ -1,4 +1,4 @@
-﻿package com.example.yang.washere.Account;
+package com.example.yang.washere.account;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -60,14 +59,13 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
     public static final int CODE_ACTION_CROP = 2;
 
     public static AccountFragment newInstance(Context context) {
-
         Bundle args = new Bundle();
         mContext = context;
         AccountFragment fragment = new AccountFragment();
         fragment.setArguments(args);
         return fragment;
     }
-    @Nullable
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account,container,false);
@@ -78,9 +76,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
-    /**
-     *
-     */
+
     private void initViews(View view){
         roundedImageView = (MLRoundedImageView) view.findViewById(R.id.img_user);
         rl_set_name = (RelativeLayout) view.findViewById(R.id.rl_set_name);

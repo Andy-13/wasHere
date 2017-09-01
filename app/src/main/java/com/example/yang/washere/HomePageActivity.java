@@ -1,16 +1,9 @@
 package com.example.yang.washere;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.app.FragmentTransaction;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.transition.Transition;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,8 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.yang.washere.About.AboutAppFragment;
-import com.example.yang.washere.Account.AccountFragment;
-import com.example.yang.washere.Account.LoginActivity;
+import com.example.yang.washere.account.AccountFragment;
+import com.example.yang.washere.account.LoginActivity;
 import com.example.yang.washere.FindMsssage.FindMessageFragment;
 import com.example.yang.washere.Guide.GuideFragment;
 import com.example.yang.washere.MyMessage.MyMessageFragment;
