@@ -38,16 +38,31 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.example.yang.washere.Constant.Constant;
 import com.example.yang.washere.R;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by Yang on 2017/4/28.
  */
 
 public class FindMessageFragment extends Fragment {
+
+    private static final String TAG = "FindMessageFragment";
+    private static final int MSG_UPDATE_MARKER = 1;
+    private static final int HANDLER_DELAY_TIME = 1000;
 
     public static final int MAP_MIN_ZOOM_SIZE = 18;
     public static final int MAP_MAX_ZOOM_SIZE = 15;
@@ -56,6 +71,7 @@ public class FindMessageFragment extends Fragment {
     private static final float markerZIndex  = 30;
 
     private MapView mapView;
+    private AMap aMap;
     private Context context;
     private Circle centerCircle;
     private Circle messageCircle;
@@ -72,6 +88,7 @@ public class FindMessageFragment extends Fragment {
 
 
     private ImageButton btnRefresh;
+    private Animation rotateAnim;
     private ImageButton btnSendMessage;
     private ImageButton btnSetRange;
     private ProgressDialog progressDialog;
@@ -83,8 +100,7 @@ public class FindMessageFragment extends Fragment {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
-                case 1:
-                    updateMarker(mapView.getMap().getMyLocation());
+                case MSG_UPDATE_MARKER:
                     btnRefresh.clearAnimation();
                     btnRefresh.setClickable(true);
             }
@@ -112,6 +128,7 @@ public class FindMessageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_map,container,false);
 
         mapView = (MapView) view.findViewById(R.id.mapView);
+        aMap = mapView.getMap();
         mapView.onCreate(savedInstanceState);
         progressDialog = ProgressDialog.show(getContext(),"到此一游","正在载入地图……");
 
@@ -156,7 +173,6 @@ public class FindMessageFragment extends Fragment {
         myLocationStyle.radiusFillColor(getResources().getColor(R.color.colorTransParent));
         BitmapDescriptor locationBitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_location_on_black_48dp_2x);
         myLocationStyle.myLocationIcon(locationBitmap);
-        AMap aMap = mapView.getMap();
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.setMyLocationEnabled(true);//设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setMinZoomLevel(aMap.getMaxZoomLevel() -1);
@@ -164,13 +180,10 @@ public class FindMessageFragment extends Fragment {
     }
 
     private void initListener(){
-        final AMap aMap = mapView.getMap();
         aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location location) {
                 if (location != null){
-                    mLocation = location;
-                    Log.d("MainActivity","定位成功" + location.getLongitude() + "   "+location.getLatitude());
 
                     LatLng curLatLng = new LatLng(location.getLatitude(),location.getLongitude());
                     if (centerCircle != null){
@@ -193,7 +206,6 @@ public class FindMessageFragment extends Fragment {
                         }
                         messageCircle.remove();
                     }
-                    updateMarker(curLatLng);
                 }
 
 
@@ -203,11 +215,15 @@ public class FindMessageFragment extends Fragment {
         aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                int index = (int) (marker.getZIndex() - markerZIndex);
                 //TODO
-                //通过markerList.get(index)获取到是第几个marker被点击 执行相应的点击事件
                 //Toast.makeText(getContext(),"被点击的是第"+(index + 1)+"个marker",Toast.LENGTH_SHORT).show();
+                PostItem item = (PostItem) marker.getObject();
+                Log.d(TAG,"item:"+item.p_id);
                 Intent intent = new Intent(getActivity(),MessageActivity.class);
+                intent.putExtra("p_id",item.p_id);
+                intent.putExtra("p_type",item.p_type);
+                intent.putExtra("latitude",item.latitude);
+                intent.putExtra("longitude",item.longitude);
                 startActivity(intent);
                 return false;
             }
@@ -217,6 +233,7 @@ public class FindMessageFragment extends Fragment {
             @Override
             public void onMapLoaded() {
                 progressDialog.dismiss();
+                btnRefresh.performClick();
             }
         });
 
@@ -225,15 +242,57 @@ public class FindMessageFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                //设置不可点击和启动动画
                 btnRefresh.setClickable(false);
-                Animation rotateAnim = AnimationUtils.loadAnimation(getContext(),R.anim.map_refresh_rotate);
+                rotateAnim = AnimationUtils.loadAnimation(getContext(),R.anim.map_refresh_rotate);
                 LinearInterpolator lin = new LinearInterpolator();
                 rotateAnim.setInterpolator(lin);
                 v.startAnimation(rotateAnim);
 
-//                Animation animation = new RotateAnimation();
-//                handler.sendEmptyMessageAtTime(1,3000);
-                handler.sendEmptyMessageDelayed(1,3000);
+                Location location = aMap.getMyLocation();
+
+                PostForm postForm = new PostForm();
+                postForm.num = getCurNum();
+                postForm.time = getCurTime();
+                postForm.longitude = location.getLongitude();
+                postForm.latitude = location.getLatitude();
+                postForm.radius = MAP_CIRCLE_RANGE;
+                    StringBuilder url = new StringBuilder(Constant.URL.BASE_URL + "checkPostAround.action");
+                    url.append("?longitude="+postForm.longitude)
+                            .append("&latitude="+postForm.latitude)
+                            .append("&radius="+postForm.radius)
+                            .append("&num="+postForm.num)
+                            .append("&time="+postForm.time);
+                    NetworkUtils.doGet(url.toString()).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.d(TAG,e.getMessage());
+                            Toast.makeText(getContext(),"请检查网络连接情况后尝试！",Toast.LENGTH_SHORT).show();
+                            handler.sendEmptyMessageDelayed(MSG_UPDATE_MARKER,HANDLER_DELAY_TIME);
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            Log.d(TAG,"call:"+call.request().url().toString());
+                            int code = response.code();
+                            String body = response.body().string();
+                            if (code == 200){
+                                Log.d(TAG,"body:"+body);
+                                Gson gson = new GsonBuilder().create();
+                                ResultForm resultForm = gson.fromJson(body,new TypeToken<ResultForm>(){}.getType());
+                                Log.d(TAG,resultForm.msg);
+                                if ("0".equals(resultForm.msg)){
+                                    updateMarker(resultForm.posts);
+                                }else {
+                                    Toast.makeText(getContext(),"数据获取失败！请重新尝试！",Toast.LENGTH_SHORT).show();
+                                }
+                            }else {
+                                Toast.makeText(getContext(),"数据获取失败！请重新尝试！",Toast.LENGTH_SHORT).show();
+                            }
+
+                            handler.sendEmptyMessageDelayed(MSG_UPDATE_MARKER,HANDLER_DELAY_TIME);
+                        }
+                    });
             }
         });
 
@@ -253,59 +312,89 @@ public class FindMessageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent publicMessage = new Intent(context,publicMessageActivity.class);
-                publicMessage.putExtra("location", mLocation);
+                double longitude = aMap.getMyLocation().getLongitude();
+                double latitude = aMap.getMyLocation().getLatitude();
+                publicMessage.putExtra("longitude",longitude);
+                publicMessage.putExtra("latitude",latitude);
                 startActivity(publicMessage);
 
             }
         });
     }
 
-    private void updateMarker(LatLng curLatLng){
+    private int getCurTime(){
+        switch (filter_time_position){
+            case 0:
+                return 3;
+            case 1:
+                return 7;
+            case 2:
+                return 30;
+            case 3:
+                return 90;
+            case 4:
+                return 365;
+            default:
+                return 0;
+        }
+    }
 
-        //从
-//        filter_time_values[filter_time_position];
-//        filter_num_values[filter_num_position];
-//        获取到当前的筛选信息
+    private int getCurNum(){
+        switch (filter_num_position){
+            case 0:
+                return 5;
+            case 1:
+                return 10;
+            default:
+                return 15;
+        }
+    }
+
+    private void updateMarker(List<PostItem> postItemList){
+
+        Location curLocation = aMap.getMyLocation();
 
         if (messageCircle != null)
             messageCircle.remove();
-        messageCircle = mapView.getMap().addCircle(new CircleOptions().center(new LatLng(curLatLng.latitude,curLatLng.longitude))
+        messageCircle = mapView.getMap().addCircle(new CircleOptions().center(new LatLng(curLocation.getLatitude(),curLocation.getLongitude()))
                 .fillColor(Color.argb(0,0,0,0))
                 .strokeWidth(MAP_MESSAGE_STROKE)
                 .strokeColor(Color.argb(110,99,160,244))
-                .radius(MAP_CIRCLE_RANGE));
+                .radius(MAP_CIRCLE_RANGE));//判断是否更新圈的位置
 
         if (markerList == null){
             markerList = new ArrayList<Marker>();
         }
-        Log.d("MainActivity","init              markerLsit.size:"+markerList.size());
         while (markerList.size() > 0){
             Marker marker = markerList.remove(0);
             marker.remove();
         } //移除当前地图上的所有标记
 
-        AMap aMap = mapView.getMap();
-        //TODO
-        //获取随机5个点的坐标
-        for (int i=0;i<5;i++){
-            double latitude = curLatLng.latitude + Math.pow(-1,i) * Math.random()* 0.001;
-            double lontitude = curLatLng.longitude + Math.pow(-1,i) * Math.random() * 0.001;
+        //测试数据
+        postItemList.add(new PostItem("1","0",aMap.getMyLocation().getLongitude()+0.0001,aMap.getMyLocation().getLatitude()+0.0001));
+        postItemList.add(new PostItem("2","0",aMap.getMyLocation().getLongitude()+0.0002,aMap.getMyLocation().getLatitude()+0.0002));
+        postItemList.add(new PostItem("3","0",aMap.getMyLocation().getLongitude()+0.0003,aMap.getMyLocation().getLatitude()+0.0003));
 
-//            LatLng latLng = new LatLng()
+
+        for (int i = 0;i<postItemList.size();i++) {
+            PostItem item = postItemList.get(i);
             MarkerOptions options = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.urgent_message))
-                                                        .position(new LatLng(latitude,lontitude))
-                                                        .setFlat(true)
-                                                        .zIndex(markerZIndex + i);
-            markerList.add(aMap.addMarker(options));
+                    .position(new LatLng(item.latitude,item.longitude))
+                    .setFlat(true)
+                    .zIndex(markerZIndex + i);
+            Marker marker = aMap.addMarker(options);
+            marker.setObject(item);
+            markerList.add(marker);
         }
 
-        Toast.makeText(getContext(),"筛选时间："+filter_time_entries[filter_time_position] + "   信息数："+filter_num_entries[filter_num_position],
-                Toast.LENGTH_SHORT).show();
-    }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getContext(),"数据已更新！",Toast.LENGTH_SHORT).show();
+            }
+        });
+//
 
-    private void updateMarker(Location location){
-        LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-        updateMarker(latLng);
     }
 
     @Override
@@ -318,6 +407,12 @@ public class FindMessageFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mapView.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -405,4 +500,58 @@ public class FindMessageFragment extends Fragment {
             });
         }
     }
+
+
+
+
+    private class PostForm{
+        double radius;
+        double longitude;
+        double latitude;
+        int time;
+        int num;
+        int type;
+
+        public PostForm(double radius,double longitude,double latitude,int time,int num,int type){
+            this.radius = radius;
+            this.longitude = longitude;
+            this.latitude = latitude;
+            this.time = time;
+            this.num = num;
+            this.type = type;
+        }
+
+        public PostForm(){}
+    }
+
+    private class ResultForm{
+        String msg;
+        List<PostItem> posts;
+        public ResultForm(){
+            posts = new ArrayList<>();
+        }
+    }
+
+    private class PostItem{
+        String p_id;
+        String p_type;
+        double longitude;
+        double latitude;
+
+        public PostItem(String p_id, String p_type, double longitude, double latitude){
+            this.p_id = p_id;
+            this.p_type = p_type;
+            this.longitude = (float) longitude;
+            this.latitude = (float) latitude;
+        }
+
+        public PostItem(String p_id,String p_type,float longitude,float latitude){
+            this.p_id = p_id;
+            this.p_type = p_type;
+            this.longitude = longitude;
+            this.latitude = latitude;
+        }
+
+    }
+
 }
