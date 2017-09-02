@@ -201,7 +201,7 @@ public class MessageActivity extends AppCompatActivity {
                             tv_time.setText(messageItem.getPublish_time());
                             tv_content.setText(messageItem.getContent());
 //                            tv_position.setText("( "+ messageItem.getLongitude()+" , " + messageItem.getLatitude() +" )");
-                            tv_position.setText(GetPositionUtil.getPosition(messageItem.getLatitude(), messageItem.getLongitude()));
+                            tv_position.setText(new GetPositionUtil().getPosition(messageItem.getLatitude(), messageItem.getLongitude()));
 
                         } catch (JSONException je) {
                             je.printStackTrace();

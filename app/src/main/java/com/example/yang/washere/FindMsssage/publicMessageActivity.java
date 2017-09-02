@@ -115,7 +115,7 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
         });
 
 //        tv_position.setText("(" + longitude + "," + latitude + ")");
-        tv_position.setText(GetPositionUtil.getPosition(latitude, longitude));
+        tv_position.setText(new GetPositionUtil().getPosition(latitude, longitude));
 
     }
     private void showPopUpWindow() {

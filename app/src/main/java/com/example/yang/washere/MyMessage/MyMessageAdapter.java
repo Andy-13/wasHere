@@ -66,7 +66,7 @@ public class MyMessageAdapter  extends BaseRecyclerAdapter<Messageitem> {
             tv_time.setText(item.getPublish_time());
             tv_content.setText(item.getContent());
 //            tv_position.setText("( "+ item.getLongitude()+" , " + item.getLatitude() +" )");
-            tv_position.setText(GetPositionUtil.getPosition(item.getLatitude(), item.getLongitude()));
+            tv_position.setText(new GetPositionUtil().getPosition(item.getLatitude(), item.getLongitude()));
             iv_message_image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

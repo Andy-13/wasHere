@@ -17,8 +17,8 @@ import okhttp3.Call;
  */
 
 public class GetPositionUtil {
-    private static String address = "";
-    public static String getPosition(double latitude,double longitude) {
+    private String address = "";
+    public  String getPosition(double latitude,double longitude) {
         String QUERYADDRESS = "http://maps.googleapis.com/maps/api/geocode/json?latlng=%s,%s&sensor=true&language=zh_cn";
         String url = String.format(QUERYADDRESS, latitude, longitude);
         OkHttpUtils.post()
