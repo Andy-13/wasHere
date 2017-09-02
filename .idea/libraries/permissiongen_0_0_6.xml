@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="permissiongen-0.0.6">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.android/build-cache/219ba86748d5c0f11efd075a01c8bfe728763174/output/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.android/build-cache/219ba86748d5c0f11efd075a01c8bfe728763174/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/6626fc6a69203f5affdb0e9aa159acd82b58741f/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/6626fc6a69203f5affdb0e9aa159acd82b58741f/output/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

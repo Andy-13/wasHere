@@ -65,9 +65,10 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
 
     private Uri imageUri;
     private String task_result_id = "";
-    int type = 0;
+    private int type = 0;
+    private double longitude;
+    private double latitude;
 
-    private Location location;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +76,10 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
 
         Intent intent = getIntent();
         if (intent != null) {
-            location = intent.getParcelableExtra("location");
-            LogUtils.i(TAG, "Longitude ----------"+location.getLongitude() + "");
-            LogUtils.i(TAG, "Latitude ----------"+location.getLatitude() + "");
+            longitude = intent.getDoubleExtra("longitude", 0.0);
+            latitude = intent.getDoubleExtra("latitude", 0.0);
+            LogUtils.i(TAG, "Longitude ----------"+longitude + "");
+            LogUtils.i(TAG, "Latitude ----------"+latitude + "");
 
         }
         EventBus.getDefault().register(this);
@@ -111,7 +113,7 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
             }
         });
 
-        tv_position.setText("(" + location.getLongitude() + "," + location.getLatitude() + ")");
+        tv_position.setText("(" + longitude + "," + latitude + ")");
     }
     private void showPopUpWindow() {
         View contentView = LayoutInflater.from(publicMessageActivity.this).inflate(R.layout.popupwindow_took_photo, null);
@@ -243,8 +245,8 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
                 .addParams("title", "标题")
                 .addParams("content", et_comments.getText().toString())
                 .addParams("media", url)
-                .addParams("longitude", location.getLongitude() + "")
-                .addParams("latitude", location.getLatitude() + "")
+                .addParams("longitude", longitude + "")
+                .addParams("latitude", latitude + "")
                 .build()
                 .execute(new StringCallback() {
                     @Override
