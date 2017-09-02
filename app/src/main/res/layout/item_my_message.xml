@@ -54,15 +54,26 @@
         android:layout_marginRight="20dp"
         />
     <ImageView
+        android:layout_marginTop="2dp"
         android:layout_below="@+id/tv_content"
         android:id="@+id/iv_message_image"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginLeft="75dp"/>
 
+    <TextView
+        android:layout_below="@+id/iv_message_image"
+        android:id="@+id/tv_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textSize="14sp"
+        android:textColor="@color/colorToolBar"
+        android:layout_marginLeft="75dp"/>
+
     <View
         android:layout_marginTop="5dp"
-        android:layout_below="@id/iv_message_image"
+        android:layout_below="@id/tv_position"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#EEEEEE">

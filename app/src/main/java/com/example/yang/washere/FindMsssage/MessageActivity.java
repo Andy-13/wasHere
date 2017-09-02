@@ -1,18 +1,15 @@
 package com.example.yang.washere.FindMsssage;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.yang.washere.Comment.CommentItem;
 import com.example.yang.washere.Comment.CommentAdapter;
+import com.example.yang.washere.Comment.CommentItem;
 import com.example.yang.washere.MyMessage.Messageitem;
 import com.example.yang.washere.R;
 import com.example.yang.washere.UI.MLRoundedImageView;
@@ -20,7 +17,6 @@ import com.holenzhou.pullrecyclerview.PullRecyclerView;
 import com.holenzhou.pullrecyclerview.layoutmanager.XLinearLayoutManager;
 
 import java.util.ArrayList;
-import java.util.TimerTask;
 
 /**
  * Created by joe on 17-5-1.
@@ -50,8 +46,8 @@ public class MessageActivity extends AppCompatActivity {
         for(int i =0; i <4; i++){
             commentItems[i] = commentItem;
         }
-        item = new Messageitem(getResources().getDrawable(R.mipmap.hai),"东野圭吾","2014-10-10 20:20",
-                "这是一个很有趣的信息",getResources().getDrawable(R.mipmap.hai),commentItems);
+//        item = new Messageitem(getResources().getDrawable(R.mipmap.hai),"东野圭吾","2014-10-10 20:20",
+//                "这是一个很有趣的信息",getResources().getDrawable(R.mipmap.hai),commentItems);
         mPullRecyclerView = (PullRecyclerView)findViewById(R.id.pull_recycler_view);
         init(commentItem);
         mPullRecyclerView.setOnRecyclerRefreshListener(new PullRecyclerView.OnRecyclerRefreshListener() {
@@ -81,12 +77,12 @@ public class MessageActivity extends AppCompatActivity {
         tv_time = (TextView)findViewById(R.id.tv_time);
         tv_content= (TextView)findViewById(R.id.tv_content);
         iv_message_image = (ImageView)findViewById(R.id.iv_message_image);
-
-        ml_user_image.setImageDrawable(item.getMl_user_head());
-        tv_name.setText(item.getUser_name());
-        tv_time.setText(item.getPublish_time());
-        tv_content.setText(item.getContent());
-        iv_message_image.setImageDrawable(item.getPublish_image());
+//
+//        ml_user_image.setImageDrawable(item.getMl_user_head());
+//        tv_name.setText(item.getUser_name());
+//        tv_time.setText(item.getPublish_time());
+//        tv_content.setText(item.getContent());
+//        iv_message_image.setImageDrawable(item.getPublish_image());
 
         iv_message_image.setOnClickListener(new View.OnClickListener() {
             @Override

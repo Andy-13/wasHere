@@ -12,5 +12,18 @@ public class Constant {
 
         //登陆
         public static final String LOGIN_URL = BASE_URL + "login.action";
+
+
+        //查看我的帖子
+        public static final String CHECK_MY_POST_URL = BASE_URL + "checkMyPost.action";
+        //发布贴子
+        public static final String PUBLISH_POST_URL = BASE_URL + "pubPost.action";
+        //上传帖子图片
+        public static final String UPLOAD_POST_PIC_URL = BASE_URL + "uploadPostPic.action";
+    }
+
+    public static class FOLDER{
+        public static final String APP_BASE_FOLDER = "/wasHere";
+        public static final String TASK_PAD_PICTURES = APP_BASE_FOLDER +"/Post/Pictures/";
     }
 }

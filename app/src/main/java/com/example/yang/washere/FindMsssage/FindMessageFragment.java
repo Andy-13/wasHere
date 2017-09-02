@@ -121,7 +121,7 @@ public class FindMessageFragment extends Fragment {
         return fragment;
     }
 
-
+    private Location mLocation;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

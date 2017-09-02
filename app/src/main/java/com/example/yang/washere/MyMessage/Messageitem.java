@@ -1,29 +1,52 @@
 package com.example.yang.washere.MyMessage;
 
-import android.graphics.drawable.Drawable;
-
-import com.example.yang.washere.Comment.CommentItem;
-import com.holenzhou.pullrecyclerview.BaseRecyclerAdapter;
-import com.holenzhou.pullrecyclerview.BaseViewHolder;
-
 /**
  * Created by Yang on 2017/4/28.
  */
 
 public class Messageitem {
-    private Drawable ml_user_head;
-    private String user_name;
-    private String publish_time;
-    private String content;
-    private Drawable publish_image;
-    private CommentItem[] comment_items;
+    private String post_id;
+    private String p_title;
+    private String p_type;
 
-    public Drawable getMl_user_head() {
-        return ml_user_head;
+    public String getPost_id() {
+        return post_id;
     }
 
-    public void setMl_user_head(Drawable ml_user_head) {
-        this.ml_user_head = ml_user_head;
+    public void setPost_id(String post_id) {
+        this.post_id = post_id;
+    }
+
+    public String getP_title() {
+        return p_title;
+    }
+
+    public void setP_title(String p_title) {
+        this.p_title = p_title;
+    }
+
+    public String getP_type() {
+        return p_type;
+    }
+
+    public void setP_type(String p_type) {
+        this.p_type = p_type;
+    }
+
+    public String getU_id() {
+        return u_id;
+    }
+
+    public void setU_id(String u_id) {
+        this.u_id = u_id;
+    }
+
+    public String getHead_logo() {
+        return head_logo;
+    }
+
+    public void setHead_logo(String head_logo) {
+        this.head_logo = head_logo;
     }
 
     public String getUser_name() {
@@ -50,29 +73,60 @@ public class Messageitem {
         this.content = content;
     }
 
-    public Drawable getPublish_image() {
-        return publish_image;
+    public String getMulti_media() {
+        return multi_media;
     }
 
-    public void setPublish_image(Drawable publish_image) {
-        this.publish_image = publish_image;
+    public void setMulti_media(String multi_media) {
+        this.multi_media = multi_media;
     }
 
-    public CommentItem[] getComment_item() {
-        return comment_items;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setComment_item(CommentItem[] comment_items) {
-        this.comment_items = comment_items;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public Messageitem(Drawable a, String name, String time, String content, Drawable b,CommentItem[] comment_items){
-        ml_user_head = a;
-        this.user_name = name;
-        publish_time = time;
-        this.content = content;
-        publish_image = b;
-        this.comment_items = comment_items;
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getPage_view() {
+        return page_view;
+    }
+
+    public void setPage_view(int page_view) {
+        this.page_view = page_view;
+    }
+
+    private String u_id;
+    private String head_logo;
+    private String user_name;
+    private String publish_time;
+    private String content;
+    private String multi_media;
+    private double longitude;
+    private double latitude;
+    private int level;
+    private int page_view;
+
+
+    public Messageitem() {
+
     }
 
 
