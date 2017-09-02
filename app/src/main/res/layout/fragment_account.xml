@@ -15,8 +15,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="20dp"
-                android:layout_centerHorizontal="true"
-                android:src="@mipmap/testimage"/>
+                android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
 
@@ -259,7 +258,7 @@
                 android:id="@+id/tv_logout"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/colorLogout"
+                android:background="@drawable/bg_logoff"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"

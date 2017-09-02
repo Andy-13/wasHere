@@ -7,8 +7,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.yang.washere.Constant.Constant;
 import com.example.yang.washere.R;
+import com.example.yang.washere.Utils.LogUtils;
+import com.example.yang.washere.Utils.PreferenceUtil;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import de.greenrobot.event.EventBus;
+import okhttp3.Call;
 
 /**
  * Created by Lee Sima on 2017/5/3.
@@ -28,11 +40,10 @@ public class SetSexActivity extends AppCompatActivity implements View.OnClickLis
     private ImageView right_arrow_woman;
 
 
-    private static final int SEX_MAN = 0;
-    private static final int SEX_WOMAN = 1;
+    private static final int GENDER_WOMAN = 0;
+    private static final int GENDER_MAN = 1;
 
-    private int sex = SEX_MAN;
-
+    private int sex;
 
 
     @Override
@@ -40,8 +51,11 @@ public class SetSexActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_sex);
 
+        sex = getIntent().getIntExtra("sex",GENDER_MAN);
+
         initViews();
         setListeners();
+        notifySexChanged();
 
     }
 
@@ -73,16 +87,16 @@ public class SetSexActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.tv_finish:
-                this.finish();
+                updateUserGender();
                 break;
 
             case R.id.rl_man:
-                sex = SEX_MAN;
+                sex = GENDER_MAN;
                 notifySexChanged();
                 break;
 
             case R.id.rl_woman:
-                sex = SEX_WOMAN;
+                sex = GENDER_WOMAN;
                 notifySexChanged();
                 break;
 
@@ -93,15 +107,66 @@ public class SetSexActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     /**
+     * 发送
+     */
+    private void updateUserGender() {
+
+        String userId = PreferenceUtil.getString(this,PreferenceUtil.USERID);
+        OkHttpUtils.post()
+                .url(Constant.URL.URL_EDIT_USER_GENDER)
+                .addParams("u_id",userId)
+                .addParams("gender",sex+"")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.e(TAG,"error: " + e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.d(TAG,"onResponse: " +response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String msg = jsonObject.getString("msg");
+                            if ("0".equals(msg)){
+                                shortToast("性别修改成功");
+                                EventBus.getDefault().post(new EditInfoEvent(EditInfoEvent.TYPE_EDIT_SEX,getSexDescription(sex)));
+                                SetSexActivity.this.finish();
+                            }else if ("1".equals(msg)){
+                                shortToast("由于系统原因修改失败");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+    /**
      *  0；男 1：女
      */
     private void notifySexChanged(){
-        if(sex == SEX_MAN){
+        if(sex == GENDER_MAN){
             right_arrow_man.setVisibility(View.VISIBLE);
             right_arrow_woman.setVisibility(View.GONE);
         }else{
             right_arrow_man.setVisibility(View.GONE);
             right_arrow_woman.setVisibility(View.VISIBLE);
         }
+    }
+
+    private String getSexDescription(int sex){
+        String res = "男";
+
+        if (GENDER_MAN == sex){
+            res =  "男";
+        } else if (GENDER_WOMAN == sex){
+           res =  "女";
+        }
+        return res;
+    }
+    private void shortToast(String msg){
+        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
 }
