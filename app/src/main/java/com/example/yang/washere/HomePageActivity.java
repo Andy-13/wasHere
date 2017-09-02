@@ -13,27 +13,48 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.yang.washere.About.AboutAppFragment;
+import com.example.yang.washere.Constant.Constant;
+import com.example.yang.washere.UI.MLRoundedImageView;
+import com.example.yang.washere.Utils.LogUtils;
+import com.example.yang.washere.Utils.PreferenceUtil;
 import com.example.yang.washere.account.AccountFragment;
+import com.example.yang.washere.account.EditInfoEvent;
 import com.example.yang.washere.account.LoginActivity;
 import com.example.yang.washere.FindMsssage.FindMessageFragment;
 import com.example.yang.washere.Guide.GuideFragment;
 import com.example.yang.washere.MyMessage.MyMessageFragment;
+import com.example.yang.washere.account.UserInfo;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import de.greenrobot.event.EventBus;
+import okhttp3.Call;
 
 public class HomePageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = HomePageActivity.class.getSimpleName();
+
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private RelativeLayout rl_account;
+    private MLRoundedImageView imageView;
+    private UserInfo mUserInfo;
     private int type = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+        EventBus.getDefault().register(this);
         FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -50,6 +71,8 @@ public class HomePageActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         rl_account = (RelativeLayout)navigationView.getHeaderView(0).findViewById(R.id.rl_account);
+        imageView = (MLRoundedImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        loadUserHead();
         rl_account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +89,65 @@ public class HomePageActivity extends AppCompatActivity
         mTransaction.replace(R.id.content_home_page,findMessageFragment,"findMessageFragment");
         mTransaction.commit();
 
+    }
+
+    /**
+     * 加载用户头像
+     */
+    private void loadUserHead() {
+
+        mUserInfo = new UserInfo();
+
+        final String userId = PreferenceUtil.getString(this,PreferenceUtil.USERID);
+        OkHttpUtils.get()
+                .url(Constant.URL.URL_GET_USER_INFO)
+                .addParams("u_id",userId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.e(TAG,"error: " + e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.d(TAG,"onResponse: " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String msg = jsonObject.getString("msg");
+//                            0：成功
+//                            1：其他
+                            if ("0".equals(msg)){
+                                JSONObject info = jsonObject.getJSONObject("userInf");
+
+                                mUserInfo.setName(info.getString("u_name"));
+                                mUserInfo.setPhone(info.getString("phone"));
+                                mUserInfo.setHeadUrl(info.getString("head_logo"));
+                                mUserInfo.setGender(info.getInt("gender"));
+                                mUserInfo.setBirthday(info.getString("birthday"));
+                                mUserInfo.setSignature(info.getString("signature"));
+
+                                LogUtils.d(TAG,"userInfo: " + mUserInfo.toString());
+                                Glide.with(HomePageActivity.this)
+                                        .load(Constant.URL.BASE_URL + mUserInfo.getHeadUrl())
+                                        .asBitmap()
+                                        .into(imageView);
+
+                            }else if ("1".equals(msg)){
+                                Toast.makeText(HomePageActivity.this,"获取用户信息失败!",Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -131,6 +213,19 @@ public class HomePageActivity extends AppCompatActivity
         mTransaction.commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * @param event
+     * eventbus 2.0
+     */
+    public void onEventMainThread(EditInfoEvent event){
+        if (event.getType() == EditInfoEvent.TYPE_EDIT_LOGO){
+            Glide.with(this)
+                    .load(Constant.URL.BASE_URL + event.getData())
+                    .asBitmap()
+                    .into(imageView);
+        }
     }
 
 }

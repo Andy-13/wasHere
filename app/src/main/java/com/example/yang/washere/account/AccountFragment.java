@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -136,7 +137,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
                                 mUserInfo.setPhone(info.getString("phone"));
                                 mUserInfo.setHeadUrl(info.getString("head_logo"));
                                 mUserInfo.setGender(info.getInt("gender"));
-                                mUserInfo.setBirthday(info.getString("birthday").substring(0,11));
+                                mUserInfo.setBirthday(info.getString("birthday"));
                                 mUserInfo.setSignature(info.getString("signature"));
 
                                 LogUtils.d(TAG,"userInfo: " + mUserInfo.toString());
@@ -185,8 +186,11 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         }else if (userInfo.getGender() == GENDER_MAN ){
             tv_sex.setText("男");
         }
-
-        tv_birthday.setText(userInfo.getBirthday());
+        if (isTextEmpty(userInfo.getBirthday())){
+            tv_birthday.setText("未设置");
+        }else{
+            tv_birthday.setText(userInfo.getBirthday().substring(0,11));
+        }
 
     }
 
@@ -315,6 +319,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
                             if (msg.equals("0")) {
                                 String head_url = jsonObject.getString("id");
                                 loadUserHead(head_url);
+                                EventBus.getDefault().post(new EditInfoEvent(EditInfoEvent.TYPE_EDIT_LOGO,head_url));
                             } else if (msg.equals("1")) {
                                 LogUtils.d(TAG, "上传图片文件失败");
                             }

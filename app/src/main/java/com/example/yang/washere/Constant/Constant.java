@@ -37,6 +37,10 @@ public class Constant {
         public static final String URL_EDIT_USER_SIGN = BASE_URL + "editUserSign.action";
         //获取个人信息
         public static final String URL_GET_USER_INFO = BASE_URL + "checkUserInf.action";
+        //获取验证码
+        public static final String URL_GET_VERIFY_CODE = BASE_URL + "getVerifyCode.action";
+        //注册
+        public static final String URL_REGISTER = BASE_URL + "register.action";
     }
 
     public static class FOLDER{

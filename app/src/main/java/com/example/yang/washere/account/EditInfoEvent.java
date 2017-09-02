@@ -49,4 +49,9 @@ public class EditInfoEvent {
      * 修改个性签名
      */
     public static final int TYPE_EDIT_SIGN = 2;
+
+    /**
+     * 修改个人头像
+     */
+    public static final int TYPE_EDIT_LOGO = 3;
 }
