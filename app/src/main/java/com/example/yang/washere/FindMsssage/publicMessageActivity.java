@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.yang.washere.Constant.Constant;
 import com.example.yang.washere.HomePageActivity;
 import com.example.yang.washere.R;
+import com.example.yang.washere.UI.GetPositionUtil;
 import com.example.yang.washere.Utils.LogUtils;
 import com.example.yang.washere.Utils.PreferenceUtil;
 import com.example.yang.washere.Utils.TakePhotoPickPhotoUtils;
@@ -113,7 +114,9 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
             }
         });
 
-        tv_position.setText("(" + longitude + "," + latitude + ")");
+//        tv_position.setText("(" + longitude + "," + latitude + ")");
+        tv_position.setText(GetPositionUtil.getPosition(latitude, longitude));
+
     }
     private void showPopUpWindow() {
         View contentView = LayoutInflater.from(publicMessageActivity.this).inflate(R.layout.popupwindow_took_photo, null);

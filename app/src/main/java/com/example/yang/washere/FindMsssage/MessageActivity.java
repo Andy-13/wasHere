@@ -16,6 +16,7 @@ import com.example.yang.washere.Constant.Constant;
 import com.example.yang.washere.MyMessage.ImageViewActivity;
 import com.example.yang.washere.MyMessage.Messageitem;
 import com.example.yang.washere.R;
+import com.example.yang.washere.UI.GetPositionUtil;
 import com.example.yang.washere.UI.MLRoundedImageView;
 import com.example.yang.washere.Utils.LogUtils;
 import com.example.yang.washere.Utils.PreferenceUtil;
@@ -199,7 +200,9 @@ public class MessageActivity extends AppCompatActivity {
                             tv_name.setText(messageItem.getUser_name());
                             tv_time.setText(messageItem.getPublish_time());
                             tv_content.setText(messageItem.getContent());
-                            tv_position.setText("( "+ messageItem.getLongitude()+" , " + messageItem.getLatitude() +" )");
+//                            tv_position.setText("( "+ messageItem.getLongitude()+" , " + messageItem.getLatitude() +" )");
+                            tv_position.setText(GetPositionUtil.getPosition(messageItem.getLatitude(), messageItem.getLongitude()));
+
                         } catch (JSONException je) {
                             je.printStackTrace();
                         }
