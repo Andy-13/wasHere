@@ -27,7 +27,7 @@ public class NetworkUtils {
     private static OkHttpClient okHttpClient;
 
     private static void init(){
-        okHttpClient = new OkHttpClient.Builder().writeTimeout(2000, TimeUnit.MILLISECONDS)
+        okHttpClient = new OkHttpClient.Builder()
                             .readTimeout(2000,TimeUnit.MILLISECONDS)
                             .build();
     }
@@ -58,11 +58,10 @@ public class NetworkUtils {
     }
 
     public static Call doGet(String url){
-        if (okHttpClient == null)
-            init();
+        OkHttpClient httpClient = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        return okHttpClient.newCall(request);
+        return httpClient.newCall(request);
     }
 }

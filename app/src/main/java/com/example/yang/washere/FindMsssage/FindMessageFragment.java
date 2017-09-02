@@ -233,7 +233,13 @@ public class FindMessageFragment extends Fragment {
             @Override
             public void onMapLoaded() {
                 progressDialog.dismiss();
-                btnRefresh.performClick();
+                btnRefresh.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        btnRefresh.performClick();
+                    }
+                });
+
             }
         });
 
@@ -371,9 +377,9 @@ public class FindMessageFragment extends Fragment {
         } //移除当前地图上的所有标记
 
         //测试数据
-        postItemList.add(new PostItem("1","0",aMap.getMyLocation().getLongitude()+0.0001,aMap.getMyLocation().getLatitude()+0.0001));
-        postItemList.add(new PostItem("2","0",aMap.getMyLocation().getLongitude()+0.0002,aMap.getMyLocation().getLatitude()+0.0002));
-        postItemList.add(new PostItem("3","0",aMap.getMyLocation().getLongitude()+0.0003,aMap.getMyLocation().getLatitude()+0.0003));
+//        postItemList.add(new PostItem("1","0",aMap.getMyLocation().getLongitude()+0.0001,aMap.getMyLocation().getLatitude()+0.0001));
+//        postItemList.add(new PostItem("2","0",aMap.getMyLocation().getLongitude()+0.0002,aMap.getMyLocation().getLatitude()+0.0002));
+//        postItemList.add(new PostItem("3","0",aMap.getMyLocation().getLongitude()+0.0003,aMap.getMyLocation().getLatitude()+0.0003));
 
 
         for (int i = 0;i<postItemList.size();i++) {
