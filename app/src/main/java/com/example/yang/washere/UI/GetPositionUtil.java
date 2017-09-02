@@ -48,6 +48,7 @@ public class GetPositionUtil {
                         }
                     }
                 });
+        //
         LogUtils.i("GetPosition", address + "");
         return address;
     }
