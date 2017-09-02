@@ -105,7 +105,7 @@ public class FindMessageFragment extends Fragment {
         return fragment;
     }
 
-
+    private Location mLocation;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -169,6 +169,7 @@ public class FindMessageFragment extends Fragment {
             @Override
             public void onMyLocationChange(Location location) {
                 if (location != null){
+                    mLocation = location;
                     Log.d("MainActivity","定位成功" + location.getLongitude() + "   "+location.getLatitude());
 
                     LatLng curLatLng = new LatLng(location.getLatitude(),location.getLongitude());
@@ -192,7 +193,7 @@ public class FindMessageFragment extends Fragment {
                         }
                         messageCircle.remove();
                     }
-//                    updateMarker(curLatLng);
+                    updateMarker(curLatLng);
                 }
 
 
@@ -252,6 +253,7 @@ public class FindMessageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent publicMessage = new Intent(context,publicMessageActivity.class);
+                publicMessage.putExtra("location", mLocation);
                 startActivity(publicMessage);
 
             }
