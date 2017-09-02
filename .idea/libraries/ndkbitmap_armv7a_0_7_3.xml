@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="ndkbitmap-armv7a-0.7.3">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.android/build-cache/32d1b47a8e045cf49cbfd276bcfd51ffe38e209d/output/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.android/build-cache/32d1b47a8e045cf49cbfd276bcfd51ffe38e209d/output/res" />
+      <root url="file://$USER_HOME$/.android/build-cache/bc6cb3a21d1cb573f99e6f0ea50745040d4e5a5c/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/bc6cb3a21d1cb573f99e6f0ea50745040d4e5a5c/output/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

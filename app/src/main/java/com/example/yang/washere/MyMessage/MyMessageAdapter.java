@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.yang.washere.Constant.Constant;
 import com.example.yang.washere.R;
+import com.example.yang.washere.UI.GetPositionUtil;
 import com.example.yang.washere.UI.MLRoundedImageView;
 import com.holenzhou.pullrecyclerview.BaseRecyclerAdapter;
 import com.holenzhou.pullrecyclerview.BaseViewHolder;
@@ -64,7 +65,8 @@ public class MyMessageAdapter  extends BaseRecyclerAdapter<Messageitem> {
             tv_name.setText(item.getUser_name());
             tv_time.setText(item.getPublish_time());
             tv_content.setText(item.getContent());
-            tv_position.setText("( "+ item.getLongitude()+" , " + item.getLatitude() +" )");
+//            tv_position.setText("( "+ item.getLongitude()+" , " + item.getLatitude() +" )");
+            tv_position.setText(new GetPositionUtil().getPosition(item.getLatitude(), item.getLongitude()));
             iv_message_image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

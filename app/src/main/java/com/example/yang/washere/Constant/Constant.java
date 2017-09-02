@@ -20,6 +20,8 @@ public class Constant {
         public static final String PUBLISH_POST_URL = BASE_URL + "pubPost.action";
         //上传帖子图片
         public static final String UPLOAD_POST_PIC_URL = BASE_URL + "uploadPostPic.action";
+        //查看帖子
+        public static final String CHECK_POST = BASE_URL + "checkPost.action";
 
 
 
