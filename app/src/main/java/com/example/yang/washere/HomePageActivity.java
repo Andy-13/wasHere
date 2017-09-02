@@ -29,7 +29,6 @@ public class HomePageActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private RelativeLayout rl_account;
-    private SharedPreferences sp;
     private int type = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +45,7 @@ public class HomePageActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        sp = this.getSharedPreferences("personalInfo", MODE_PRIVATE);
-        if(sp.getString("account", "").equals("")) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
+
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

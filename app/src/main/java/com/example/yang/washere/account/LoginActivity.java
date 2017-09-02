@@ -29,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private TextView forgetPasswordTv;
     private TextView signupTv;
-//    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +44,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             LoginActivity.this.finish();
         }
-//        String account = sp.getString("account", "");
-//        String password = sp.getString("password", "");
-//        if(!account.isEmpty())
-//            accountEt.setText(account);
-//        if (!password.isEmpty())
-//            passwordEt.setText(password);
+
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                                         PreferenceUtil.setString(LoginActivity.this, PreferenceUtil.USERID, userId);
                                         Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
                                         startActivity(intent);
-                                        LoginActivity.this.finish();
+                                        finish();
                                     }else if (msg.equals("1")) {
                                         Toast.makeText(LoginActivity.this, "账号密码不匹配", Toast.LENGTH_SHORT).show();
                                     } else if (msg.equals("2")) {

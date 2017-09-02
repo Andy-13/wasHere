@@ -192,7 +192,7 @@ public class FindMessageFragment extends Fragment {
                         }
                         messageCircle.remove();
                     }
-                    updateMarker(curLatLng);
+//                    updateMarker(curLatLng);
                 }
 
 
