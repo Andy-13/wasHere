@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,9 +23,15 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.yang.washere.Constant.Constant;
+import com.example.yang.washere.HomePageActivity;
 import com.example.yang.washere.R;
+import com.example.yang.washere.Utils.LogUtils;
+import com.example.yang.washere.Utils.PreferenceUtil;
 import com.example.yang.washere.Utils.TakePhotoPickPhotoUtils;
 import com.example.yang.washere.event.DeletePhotoEvent;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,13 +40,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import de.greenrobot.event.EventBus;
+import okhttp3.Call;
 
 /**
  * Created by Yang on 2017/5/6.
  */
 
 public class publicMessageActivity extends Activity implements View.OnClickListener{
-
+    public static final String TAG = "PublishMessageActivity";
     public static final int PICK_FROM_CAMERA = 0;
     public static final int PICK_FROM_FILE = 1;
     public static final int ACTION_CROP = 2;
@@ -53,23 +61,34 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
     private Bitmap bitmap;
     private TakePhotoPickPhotoUtils mTakePhotoPickPhotoUtils;
     private TextView tv_tips;
+    private TextView tv_position;
 
     private Uri imageUri;
     private String task_result_id = "";
     int type = 0;
+
+    private Location location;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish_message);
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            location = intent.getParcelableExtra("location");
+            LogUtils.i(TAG, "Longitude ----------"+location.getLongitude() + "");
+            LogUtils.i(TAG, "Latitude ----------"+location.getLatitude() + "");
+
+        }
         EventBus.getDefault().register(this);
-        mTakePhotoPickPhotoUtils = new TakePhotoPickPhotoUtils(publicMessageActivity.this, 600);
+        mTakePhotoPickPhotoUtils = new TakePhotoPickPhotoUtils(publicMessageActivity.this, 1000);
         tv_cancel = (TextView) findViewById(R.id.tv_cancel);
         tv_tips = (TextView) findViewById(R.id.tv_tips);
         add_picture = (ImageView) findViewById(R.id.add_picture);
         picture = (ImageView) findViewById(R.id.picture);
         et_comments = (EditText) findViewById(R.id.et_idea);
         tv_publish_result = (TextView) findViewById(R.id.tv_publish_result);
+        tv_position = (TextView) findViewById(R.id.tv_position);
         tv_tips.setText(et_comments.length() + "/500");
         tv_cancel.setOnClickListener(this);
         add_picture.setOnClickListener(this);
@@ -91,6 +110,8 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
                 tv_tips.setText(editable.length() + "/500");
             }
         });
+
+        tv_position.setText("(" + location.getLongitude() + "," + location.getLatitude() + ")");
     }
     private void showPopUpWindow() {
         View contentView = LayoutInflater.from(publicMessageActivity.this).inflate(R.layout.popupwindow_took_photo, null);
@@ -153,23 +174,61 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
 
     private void publishResult() {
         File file = null;
-        file = new File(imageUri.getPath().toString());
-        tv_publish_result.setClickable(true);
-        if (file.exists()) {
-            if (et_comments.getText().toString().equals("")) {
-                Toast.makeText(publicMessageActivity.this, "请先将信息填写完整", Toast.LENGTH_SHORT).show();
+        if(imageUri != null) {
+            file = new File(imageUri.getPath().toString());
+            tv_publish_result.setClickable(true);
+            if (file.exists()) {
+                if (et_comments.getText().toString().equals("")) {
+                    Toast.makeText(publicMessageActivity.this, "请先将信息填写完整", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    sendPic(file);
+                }
+            } else {
+                tv_publish_result.setClickable(true);
+                Toast.makeText(publicMessageActivity.this, "图片文件不存在，请重新选择", Toast.LENGTH_SHORT).show();
                 return;
-            }else {
-                sendPic(file);
             }
         }else{
-            Toast.makeText(publicMessageActivity.this, "图片文件不存在，请重新选择", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(publicMessageActivity.this,"请先选择一张图片",Toast.LENGTH_SHORT).show();
+            tv_publish_result.setClickable(true);
         }
     }
+
     // Todo 将文件图片上传到服务器，然后将status信息传到后台
     private void sendPic(File file) {
+        OkHttpUtils.post()
+                .addFile("file", file.getName(), file)
+                .url(Constant.URL.UPLOAD_POST_PIC_URL)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i(TAG, e.toString());
+                        Toast.makeText(publicMessageActivity.this, "发表失败", Toast.LENGTH_SHORT).show();
+                        tv_publish_result.setClickable(true);
+                    }
 
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i(TAG, response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String msg = jsonObject.getString("msg");
+                            String url = jsonObject.getString("id");
+                            if (msg.equals("0")) {
+                                sendStatusMessage(url);
+                            }else{
+                                Toast.makeText(publicMessageActivity.this, "由于系统原因，发表状态失败", Toast.LENGTH_SHORT).show();
+                                tv_publish_result.setClickable(true);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            tv_publish_result.setClickable(true);
+                        }
+                    }
+                });
     }
 
     private void sendStatusMessage(String url) {
@@ -177,6 +236,46 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
             Toast.makeText(publicMessageActivity.this, "请先将信息填写完整", Toast.LENGTH_SHORT).show();
             return;
         }
+        OkHttpUtils.post()
+                .url(Constant.URL.PUBLISH_POST_URL)
+                .addParams("u_id", PreferenceUtil.getString(publicMessageActivity.this, PreferenceUtil.USERID))
+                .addParams("type", "0")
+                .addParams("title", "标题")
+                .addParams("content", et_comments.getText().toString())
+                .addParams("media", url)
+                .addParams("longitude", location.getLongitude() + "")
+                .addParams("latitude", location.getLatitude() + "")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i(TAG, e.toString());
+                        tv_publish_result.setClickable(true);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i(TAG, response);
+                        try {
+                            JSONObject jsonObject1 = new JSONObject(response);
+                            String msg = jsonObject1.getString("msg");
+                            if (msg.equals("0")) {
+                                Toast.makeText(publicMessageActivity.this, "发表帖子成功", Toast.LENGTH_SHORT).show();
+//                                EventBus.getDefault().post(new TodayAchievementFinishEvent());
+                                Intent a = new Intent(publicMessageActivity.this, HomePageActivity.class);
+                                startActivity(a);
+                                finish();
+                            } else {
+                                Toast.makeText(publicMessageActivity.this, "由于系统原因，发表失败", Toast.LENGTH_SHORT).show();
+                                tv_publish_result.setClickable(true);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            tv_publish_result.setClickable(true);
+                        }
+                    }
+                });
 
     }
 
@@ -194,8 +293,7 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
                 break;
             case R.id.tv_publish_result:
                 tv_publish_result.setClickable(false);
-                Toast.makeText(publicMessageActivity.this,"你已经发布了一条信息",Toast.LENGTH_SHORT).show();
-                finish();
+                publishResult();
                 break;
             case R.id.picture:
                 File sendfile = null;

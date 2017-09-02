@@ -71,10 +71,11 @@
                 android:layout_marginBottom="5dp"
                 android:textColor="#999"/>
             <RelativeLayout
+                android:id="@+id/rl_image"
                 android:layout_width="wrap_content"
                 android:layout_below="@+id/tv_tips"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="10dp"
                 >
 
                 <ImageView
@@ -93,6 +94,17 @@
                     android:layout_height="90dp"
                     />
             </RelativeLayout>
+
+            <TextView
+                android:layout_below="@+id/rl_image"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/tv_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorToolBar"
+                android:layout_marginBottom="10dp"
+                android:textSize="14dp"/>
+
         </RelativeLayout>
 
     </LinearLayout>
