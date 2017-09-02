@@ -60,6 +60,8 @@ public class MessageActivity extends AppCompatActivity {
     private EditText edt_comment;
     private Button btn_comment;
 
+    String picUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +78,7 @@ public class MessageActivity extends AppCompatActivity {
         edt_comment = (EditText) findViewById(R.id.comment_edt);
         btn_comment = (Button) findViewById(R.id.comment_btn);
 
+        init();
         Intent intent = getIntent();
         if (intent != null) {
             post_id = intent.getStringExtra("p_id");
@@ -87,11 +90,11 @@ public class MessageActivity extends AppCompatActivity {
         }
 
 
-        init();
         mPullRecyclerView.setOnRecyclerRefreshListener(new PullRecyclerView.OnRecyclerRefreshListener() {
             @Override
             public void onPullRefresh() {
                 Toast.makeText(getBaseContext(),"刷新",Toast.LENGTH_SHORT).show();
+                getCommentItems(post_id);
                 mPullRecyclerView.stopRefresh();
             }
 
@@ -116,7 +119,7 @@ public class MessageActivity extends AppCompatActivity {
 //                imageDialog.show(fragmentManager,DIALOG_IMAGE);
                 int location[] = new int[2] ;
                 iv_message_image.getLocationOnScreen(location);
-                Intent i = ImageDanmuActivity.newIntent(MessageActivity.this,"lq",commentContents
+                Intent i = ImageDanmuActivity.newIntent(MessageActivity.this, picUrl ,commentContents
                         ,location[0],location[1],iv_message_image.getWidth(),iv_message_image.getHeight());
 
 
@@ -156,8 +159,8 @@ public class MessageActivity extends AppCompatActivity {
                                         Log.d("mygod", msg + "  " );
 
                                         if(msg.equals("0")){
-                                            Toast.makeText(MessageActivity.this, "评论成功", Toast.LENGTH_SHORT);
-
+                                            edt_comment.setText(" ");
+                                            mPullRecyclerView.refreshNoPull();
                                         }
                                         else Toast.makeText(MessageActivity.this,
                                                 "评论失败"+ msg, Toast.LENGTH_SHORT).show();
@@ -216,6 +219,7 @@ public class MessageActivity extends AppCompatActivity {
                                 String head_logo = currentPost.getString("head_logo").replace("thumbnail","original");
                                 String content = currentPost.getString("content");
                                 String multi_media = currentPost.getString("multi_media").replace("thumbnail","original");
+                                picUrl = multi_media;
                                 Double longitude = currentPost.getDouble("longitude");
                                 Double latitude = currentPost.getDouble("latitude");
                                 String time =  currentPost.getString("time");
@@ -272,9 +276,10 @@ public class MessageActivity extends AppCompatActivity {
                             JSONArray jsonArray = jsonObject.getJSONArray("floors");
                             JSONObject currentPost = null;
                             Log.d("mygod", "length: "+ jsonArray.length());
-                            CommentItem commentItem = new CommentItem();
                             Log.d("mygod", "response");
+                            commentList.clear();
                             for(int i = 0; i < jsonArray.length(); i++){
+                                CommentItem commentItem = new CommentItem();
                                 currentPost = (JSONObject) jsonArray.get(i);
                                 commentItem.setUser_name(currentPost.getString("u_name"));
                                 commentItem.setHead_logo(currentPost.getString("head_logo"));
@@ -283,6 +288,7 @@ public class MessageActivity extends AppCompatActivity {
                                 commentList.add(commentItem);
                                 Log.d("mygod", commentItem.getComment_content());
                             }
+                            commentAdapter.notifyDataSetChanged();
                         } catch (JSONException je){
                             je.printStackTrace();
                         }
