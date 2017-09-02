@@ -4,6 +4,8 @@ import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.yang.washere.Constant.Constant;
 import com.example.yang.washere.R;
 import com.example.yang.washere.UI.MLRoundedImageView;
 import com.holenzhou.pullrecyclerview.BaseRecyclerAdapter;
@@ -42,7 +44,10 @@ public class CommentAdapter extends BaseRecyclerAdapter<CommentItem> {
         }
 
         public void bindData(CommentItem item){
-            ml_user_image.setImageDrawable(item.getMl_user_head());
+            Glide.with(mContext)
+                    .load(Constant.URL.BASE_URL + item.getHead_logo())
+                    .asBitmap()
+                    .into(ml_user_image);
             tv_name.setText(item.getUser_name());
             tv_time.setText(item.getPublish_time());
             tv_content.setText(item.getComment_content());

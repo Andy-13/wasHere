@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,33 +42,40 @@ import okhttp3.Call;
 
 public class MessageActivity extends AppCompatActivity {
     private static final String TAG = "MessageActivity";
-    private static final String DIALOG_IMAGE = "DialogImage";
 
     private PullRecyclerView mPullRecyclerView;
     private CommentAdapter commentAdapter;
     private ArrayList<CommentItem> commentList = new ArrayList<>();
 
+    private View header;
     private MLRoundedImageView ml_user_image;
     private TextView tv_name;
     private TextView tv_time;
     private TextView tv_content;
     private TextView tv_position;
     private ImageView iv_message_image;
-    private CommentItem[] commentItems = new CommentItem[4];
     private String post_id;
     private Messageitem messageItem;
+
+    private EditText edt_comment;
+    private Button btn_comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
-        ml_user_image = (MLRoundedImageView)findViewById(R.id.ml_user_image);
-        tv_name = (TextView)findViewById(R.id.tv_name);
-        tv_time = (TextView)findViewById(R.id.tv_time);
-        tv_content= (TextView)findViewById(R.id.tv_content);
-        tv_position = (TextView) findViewById(R.id.tv_position);
-        iv_message_image = (ImageView)findViewById(R.id.iv_message_image);
-        mPullRecyclerView = (PullRecyclerView)findViewById(R.id.pull_recycler_view);
+        header = View.inflate(this, R.layout.item_my_message, null);
+        ml_user_image = (MLRoundedImageView) header.findViewById(R.id.ml_user_image);
+        tv_name = (TextView) header.findViewById(R.id.tv_name);
+        tv_time = (TextView) header.findViewById(R.id.tv_time);
+        tv_content= (TextView) header.findViewById(R.id.tv_content);
+        tv_position = (TextView) header.findViewById(R.id.tv_position);
+        iv_message_image = (ImageView) header.findViewById(R.id.iv_message_image);
+        mPullRecyclerView = (PullRecyclerView) findViewById(R.id.pull_recycler_view);
+
+        edt_comment = (EditText) findViewById(R.id.comment_edt);
+        btn_comment = (Button) findViewById(R.id.comment_btn);
+
         Intent intent = getIntent();
         if (intent != null) {
             post_id = intent.getStringExtra("p_id");
@@ -73,18 +83,15 @@ public class MessageActivity extends AppCompatActivity {
         }
         if(!post_id.equals("")){
             getPostMessage(post_id);
+            getCommentItems(post_id);
         }
 
-        CommentItem commentItem = new CommentItem(getResources().getDrawable(R.mipmap.hai),"东野圭吾","2014-10-10 20:20",
-                "这是一条有趣的评论");
-        for(int i =0; i <4; i++){
-            commentItems[i] = commentItem;
-        }
-        init(commentItem);
+
+        init();
         mPullRecyclerView.setOnRecyclerRefreshListener(new PullRecyclerView.OnRecyclerRefreshListener() {
             @Override
             public void onPullRefresh() {
-                Toast.makeText(getBaseContext(),"点击下拉刷新",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(),"刷新",Toast.LENGTH_SHORT).show();
                 mPullRecyclerView.stopRefresh();
             }
 
@@ -99,9 +106,9 @@ public class MessageActivity extends AppCompatActivity {
         iv_message_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] commentContents = new String[commentItems.length];
-                for(int i = 0; i < commentItems.length; i++){
-                    commentContents[i] = commentItems[i].getComment_content();
+                String[] commentContents = new String[commentList.size()];
+                for(int i = 0; i < commentList.size(); i++){
+                    commentContents[i] = commentList.get(i).getComment_content();
                 }
 //                android.app.FragmentManager fragmentManager = getFragmentManager();
 //                final ImageDanmuDialog  imageDialog = ImageDanmuDialog.newInstance("lq",commentContents);
@@ -113,28 +120,69 @@ public class MessageActivity extends AppCompatActivity {
                         ,location[0],location[1],iv_message_image.getWidth(),iv_message_image.getHeight());
 
 
-                Intent intent = new Intent() ;
-                //intent.putExtras(bundle);
                 startActivity(i);
                 overridePendingTransition(0, 0);
 
             }
         });
+
+        btn_comment.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String comment = edt_comment.getText().toString();
+                if(comment.equals("")){
+                    Toast.makeText(MessageActivity.this, "沉默未必是金哦", Toast.LENGTH_SHORT).show();
+                }else {
+
+                    OkHttpUtils.post()
+                            .url(Constant.URL.COMMENT_URL)
+                            .addParams("u_id", PreferenceUtil.getString(MessageActivity.this,
+                                    PreferenceUtil.USERID))
+                            .addParams("f_id", post_id)
+                            .addParams("content", comment)
+                            .build()
+                            .execute(new StringCallback() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    LogUtils.i(TAG, e.toString());
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    try{
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        String msg = jsonObject.getString("msg");
+
+                                        Log.d("mygod", msg + "  " );
+
+                                        if(msg.equals("0")){
+                                            Toast.makeText(MessageActivity.this, "评论成功", Toast.LENGTH_SHORT);
+
+                                        }
+                                        else Toast.makeText(MessageActivity.this,
+                                                "评论失败"+ msg, Toast.LENGTH_SHORT).show();
+                                    } catch (JSONException je){
+                                        je.printStackTrace();
+                                    }
+                                }
+                            });
+
+                }
+            }
+        });
     }
-    private void init(CommentItem commentItem) {
+    private void init() {
 
         mPullRecyclerView.setLayoutManager(new XLinearLayoutManager(getBaseContext()));
         commentAdapter = new CommentAdapter(getBaseContext(), R.layout.item_comment, commentList);
         mPullRecyclerView.setAdapter(commentAdapter);
+        mPullRecyclerView.addHeaderView(header);
         mPullRecyclerView.setColorSchemeResources(R.color.colorPrimary); // 设置下拉刷新的旋转圆圈的颜色
         mPullRecyclerView.enablePullRefresh(true); // 开启下拉刷新，默认即为true，可不用设置
         mPullRecyclerView.enableLoadMore(true);
         mPullRecyclerView.enableLoadDoneTip(true, R.string.load_done_tip); // 开启数据全部加载完成时的底部提示，默认为false
 
-        commentList.add(commentItems[0]);
-        commentList.add(commentItems[1]);
-        commentList.add(commentItems[2]);
-        commentList.add(commentItems[3]);
+
     }
 
     private void getPostMessage(String post_id) {
@@ -206,6 +254,43 @@ public class MessageActivity extends AppCompatActivity {
                         } catch (JSONException je) {
                             je.printStackTrace();
                         }
+                    }
+                });
+    }
+
+    private void getCommentItems(String post_id){
+        Log.d("mygod", "getCommentItems运行了");
+        OkHttpUtils.post()
+                .url(Constant.URL.CHECK_POST_COMMENTS_URL)
+                .addParams("id", post_id)
+                .build()
+                .execute(new StringCallback(){
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try{
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("floors");
+                            JSONObject currentPost = null;
+                            Log.d("mygod", "length: "+ jsonArray.length());
+                            CommentItem commentItem = new CommentItem();
+                            Log.d("mygod", "response");
+                            for(int i = 0; i < jsonArray.length(); i++){
+                                currentPost = (JSONObject) jsonArray.get(i);
+                                commentItem.setUser_name(currentPost.getString("u_name"));
+                                commentItem.setHead_logo(currentPost.getString("head_logo"));
+                                commentItem.setPublish_time(currentPost.getString("time"));
+                                commentItem.setComment_content(currentPost.getString("content"));
+                                commentList.add(commentItem);
+                                Log.d("mygod", commentItem.getComment_content());
+                            }
+                        } catch (JSONException je){
+                            je.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("mygod", e.toString());
                     }
                 });
     }

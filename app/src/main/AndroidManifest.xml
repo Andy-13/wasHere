@@ -42,7 +42,8 @@
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".FindMsssage.MessageActivity">
+        <activity android:name=".FindMsssage.MessageActivity"
+            android:windowSoftInputMode="stateVisible|adjustPan">
         </activity>
 
         <activity android:name=".account.LoginActivity"

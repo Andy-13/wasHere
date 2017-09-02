@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="DanmakuFlameMaster-0.7.3">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.android/build-cache/c28c8d2d2c6ff2d73b57af7df784efa002b80bde/output/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.android/build-cache/c28c8d2d2c6ff2d73b57af7df784efa002b80bde/output/res" />
+      <root url="file://$USER_HOME$/android_develop_tools/sdk/.android/build-cache/374e7f415164ebd552dda314fd31c80772ebf937/output/res" />
+      <root url="jar://$USER_HOME$/android_develop_tools/sdk/.android/build-cache/374e7f415164ebd552dda314fd31c80772ebf937/output/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
