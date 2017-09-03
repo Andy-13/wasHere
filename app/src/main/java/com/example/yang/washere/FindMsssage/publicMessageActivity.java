@@ -84,7 +84,7 @@ public class publicMessageActivity extends Activity implements View.OnClickListe
 
         }
         EventBus.getDefault().register(this);
-        mTakePhotoPickPhotoUtils = new TakePhotoPickPhotoUtils(publicMessageActivity.this, 1000);
+        mTakePhotoPickPhotoUtils = new TakePhotoPickPhotoUtils(publicMessageActivity.this, 500);
         tv_cancel = (TextView) findViewById(R.id.tv_cancel);
         tv_tips = (TextView) findViewById(R.id.tv_tips);
         add_picture = (ImageView) findViewById(R.id.add_picture);

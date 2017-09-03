@@ -6,14 +6,24 @@
     android:background="@color/colorPrimary"
     android:orientation="vertical" >
 
+
+    <com.example.yang.washere.UI.MLRoundedImageView
+        android:layout_marginTop="30dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/app_icon"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/logo"/>
+
     <LinearLayout
         android:id="@+id/ll_account"
+        android:layout_below="@id/logo"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
         android:layout_marginStart="64dp"
         android:layout_marginEnd="64dp"
-        android:layout_marginTop="192dp">
+        android:layout_marginTop="40dp">
 
         <ImageView
             android:layout_width="20dp"
@@ -101,7 +111,7 @@
         android:gravity="center"
         android:textColor="@color/colorPrimary"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"/>
+        android:layout_marginTop="50dp"/>
 
 
 </RelativeLayout>

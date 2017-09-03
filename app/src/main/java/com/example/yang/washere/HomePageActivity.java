@@ -1,7 +1,5 @@
 package com.example.yang.washere;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.FragmentTransaction;
 import android.view.View;
@@ -13,8 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -25,7 +23,6 @@ import com.example.yang.washere.Utils.LogUtils;
 import com.example.yang.washere.Utils.PreferenceUtil;
 import com.example.yang.washere.account.AccountFragment;
 import com.example.yang.washere.account.EditInfoEvent;
-import com.example.yang.washere.account.LoginActivity;
 import com.example.yang.washere.FindMsssage.FindMessageFragment;
 import com.example.yang.washere.Guide.GuideFragment;
 import com.example.yang.washere.MyMessage.MyMessageFragment;
@@ -48,6 +45,7 @@ public class HomePageActivity extends AppCompatActivity
     private NavigationView navigationView;
     private RelativeLayout rl_account;
     private MLRoundedImageView imageView;
+    private TextView userName;
     private UserInfo mUserInfo;
     private int type = 1;
     @Override
@@ -72,7 +70,8 @@ public class HomePageActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         rl_account = (RelativeLayout)navigationView.getHeaderView(0).findViewById(R.id.rl_account);
         imageView = (MLRoundedImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
-        loadUserHead();
+        userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.userName);
+        loadUserInfo();
         rl_account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +93,7 @@ public class HomePageActivity extends AppCompatActivity
     /**
      * 加载用户头像
      */
-    private void loadUserHead() {
+    private void loadUserInfo() {
 
         mUserInfo = new UserInfo();
 
@@ -132,6 +131,7 @@ public class HomePageActivity extends AppCompatActivity
                                         .load(Constant.URL.BASE_URL + mUserInfo.getHeadUrl())
                                         .asBitmap()
                                         .into(imageView);
+                                userName.setText(mUserInfo.getName());
 
                             }else if ("1".equals(msg)){
                                 Toast.makeText(HomePageActivity.this,"获取用户信息失败!",Toast.LENGTH_SHORT).show();
@@ -225,6 +225,11 @@ public class HomePageActivity extends AppCompatActivity
                     .load(Constant.URL.BASE_URL + event.getData())
                     .asBitmap()
                     .into(imageView);
+            return;
+        }
+        if (event.getType() == EditInfoEvent.TYPE_EDIT_NAME){
+            userName.setText(event.getData());
+            return;
         }
     }
 
