@@ -49,6 +49,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -62,6 +63,7 @@ public class FindMessageFragment extends Fragment {
 
     private static final String TAG = "FindMessageFragment";
     private static final int MSG_UPDATE_MARKER = 1;
+    private static final int MSG_CLICK_REFRESH = 2;
     private static final int HANDLER_DELAY_TIME = 1000;
 
     public static final int MAP_MIN_ZOOM_SIZE = 18;
@@ -71,7 +73,6 @@ public class FindMessageFragment extends Fragment {
     private static final float markerZIndex  = 30;
 
     private MapView mapView;
-    private AMap aMap;
     private Context context;
     private Circle centerCircle;
     private Circle messageCircle;
@@ -103,6 +104,10 @@ public class FindMessageFragment extends Fragment {
                 case MSG_UPDATE_MARKER:
                     btnRefresh.clearAnimation();
                     btnRefresh.setClickable(true);
+                    break;
+                case MSG_CLICK_REFRESH:
+                    btnRefresh.performClick();
+                    break;
             }
         }
     };
@@ -125,10 +130,12 @@ public class FindMessageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        Log.d(TAG,"onCreateView");
+
         View view = inflater.inflate(R.layout.fragment_map,container,false);
 
         mapView = (MapView) view.findViewById(R.id.mapView);
-        aMap = mapView.getMap();
         mapView.onCreate(savedInstanceState);
         progressDialog = ProgressDialog.show(getContext(),"到此一游","正在载入地图……");
 
@@ -173,6 +180,7 @@ public class FindMessageFragment extends Fragment {
         myLocationStyle.radiusFillColor(getResources().getColor(R.color.colorTransParent));
         BitmapDescriptor locationBitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_location_on_black_48dp_2x);
         myLocationStyle.myLocationIcon(locationBitmap);
+        AMap aMap = mapView.getMap();
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.setMyLocationEnabled(true);//设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setMinZoomLevel(aMap.getMaxZoomLevel() -1);
@@ -180,6 +188,7 @@ public class FindMessageFragment extends Fragment {
     }
 
     private void initListener(){
+        AMap aMap = mapView.getMap();
         aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location location) {
@@ -232,13 +241,9 @@ public class FindMessageFragment extends Fragment {
         aMap.setOnMapLoadedListener(new AMap.OnMapLoadedListener() {
             @Override
             public void onMapLoaded() {
+                Log.d(TAG,"onMapLoaded");
                 progressDialog.dismiss();
-                btnRefresh.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        btnRefresh.performClick();
-                    }
-                });
+                handler.sendEmptyMessageDelayed(MSG_CLICK_REFRESH,800);
 
             }
         });
@@ -255,7 +260,14 @@ public class FindMessageFragment extends Fragment {
                 rotateAnim.setInterpolator(lin);
                 v.startAnimation(rotateAnim);
 
-                Location location = aMap.getMyLocation();
+                AMap aMap1 = mapView.getMap();
+
+                Location location = aMap1.getMyLocation();
+                if (location == null){
+                    Log.d(TAG,"location == null");
+                    return;
+                }
+
 
                 PostForm postForm = new PostForm();
                 postForm.num = getCurNum();
@@ -318,8 +330,9 @@ public class FindMessageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent publicMessage = new Intent(context,publicMessageActivity.class);
-                double longitude = aMap.getMyLocation().getLongitude();
-                double latitude = aMap.getMyLocation().getLatitude();
+                AMap aMap1 = mapView.getMap();
+                double longitude = aMap1.getMyLocation().getLongitude();
+                double latitude = aMap1.getMyLocation().getLatitude();
                 publicMessage.putExtra("longitude",longitude);
                 publicMessage.putExtra("latitude",latitude);
                 startActivity(publicMessage);
@@ -357,6 +370,8 @@ public class FindMessageFragment extends Fragment {
     }
 
     private void updateMarker(List<PostItem> postItemList){
+
+        AMap aMap = mapView.getMap();
 
         Location curLocation = aMap.getMyLocation();
 
@@ -405,26 +420,36 @@ public class FindMessageFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        Log.d(TAG,"onDestroy");
         super.onDestroy();
         mapView.onDestroy();
     }
 
     @Override
     public void onResume() {
+        Log.d(TAG,"onResume");
         super.onResume();
         mapView.onResume();
     }
 
     @Override
     public void onStart() {
+        Log.d(TAG,"onStart");
         super.onStart();
 
     }
 
     @Override
     public void onPause() {
+        Log.d(TAG,"onPause");
         super.onPause();
         mapView.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG,"onStop");
     }
 
     @Override
