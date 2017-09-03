@@ -24,6 +24,13 @@ public class Constant {
         public static final String CHECK_POST = BASE_URL + "checkPost.action";
 
 
+        //查看帖子评论
+        public static final String CHECK_POST_COMMENTS_URL = BASE_URL + "checkPostComments.action";
+        //评论
+        public static final String COMMENT_URL = BASE_URL + "comment.action";
+        //删除评论
+        public static final String DELETE_COMMENT_URL = BASE_URL + "deleteComment.action";
+
 
 
 

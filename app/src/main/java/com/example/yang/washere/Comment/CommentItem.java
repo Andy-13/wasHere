@@ -7,17 +7,17 @@ import android.graphics.drawable.Drawable;
  */
 
 public class CommentItem {
-    private Drawable ml_user_head;
+    private String head_logo;
     private String user_name;
     private String publish_time;
     private String comment_content;
 
-    public Drawable getMl_user_head() {
-        return ml_user_head;
+    public String getHead_logo() {
+        return head_logo;
     }
 
-    public void setMl_user_head(Drawable ml_user_head) {
-        this.ml_user_head = ml_user_head;
+    public void setHead_logo(String ml_user_head) {
+        this.head_logo = ml_user_head;
     }
 
     public String getUser_name() {
@@ -44,10 +44,12 @@ public class CommentItem {
         this.comment_content = comment_content;
     }
 
-    public CommentItem(Drawable user_head, String name, String time, String content) {
-        this.ml_user_head = user_head;
+    public CommentItem(String user_head, String name, String time, String content) {
+        this.head_logo = user_head;
         this.user_name = name;
         this.publish_time = time;
         this.comment_content = content;
     }
+
+    public CommentItem(){}
 }

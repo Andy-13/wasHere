@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">wasHere</string>
+    <string name="app_name">到此一游</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -19,4 +19,13 @@
         <item>10条</item>
         <item>15条</item>
     </array>
+    
+    <string name="about_us_text">
+        到此一游是一款基于地理位置的分享型APP，用户到达一个地方时，可以查看其他用户之前在该点附近发表的
+        个人感受。同时用户也可以发表自己的感受。
+        \n\n功能：用户可以发表分享信息，查看当前地点限定半径内的历史分享，对分享进行评论，查看其它人的相关评论哦
+        \n\n注意：之前发布过的消息的评论只有你再次抵达该地点时才能查看哦！
+        \n\n开发团队：到此一游团队
+        \n开发时间：2017年
+    </string>
 </resources>
