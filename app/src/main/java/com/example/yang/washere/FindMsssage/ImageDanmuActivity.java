@@ -24,6 +24,8 @@ import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.example.yang.washere.Constant.Constant;
 import com.example.yang.washere.R;
 
 import java.util.HashMap;
@@ -108,10 +110,10 @@ public class ImageDanmuActivity extends Activity {
             }
         });
 
-        Resources resources = getResources();
-        Drawable btnDrawable = resources.getDrawable(R.mipmap.hai);
-        //mDanmakuView.setBackgroundDrawable(btnDrawable);
-        mImageView.setImageDrawable(btnDrawable);
+        Glide.with(ImageDanmuActivity.this)
+                .load(Constant.URL.BASE_URL + photoFile)
+                .asBitmap()
+                .into(mImageView);
 
         Log.i("123","setImageDone");
 
