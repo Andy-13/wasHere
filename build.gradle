@@ -11,12 +11,14 @@ buildscript {
         // in the individual module build.gradle files
         //123
         //develop only check
+        //feature New
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        //feature New
     }
 }
 
